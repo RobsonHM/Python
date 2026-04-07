@@ -14,13 +14,3 @@ This repository contains a collection of Python scripts and small projects organ
 ## Usage
 
 Browse the folders and open any Python file to explore different programming concepts and solutions. Each script is self-contained and can be run independently.
-
-## Requirements
-
-- Python 3.x
-
-No external dependencies are required for most scripts. Some scripts may require additional packages, which will be mentioned in comments within those files.
-
-## License
-
-This repository is for educational purposes.
