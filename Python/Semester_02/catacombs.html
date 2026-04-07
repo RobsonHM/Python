@@ -1,0 +1,319 @@
+:: StoryTitle
+The Echoing Catacombs
+
+:: StoryData
+{"ifid":"76A2209F-19D1-4E61-BE1B-2B2D62C381E2"}
+
+:: StoryStylesheet
+/* * This is the stylesheet for "The Echoing Catacombs".
+ * It gives the game a dark, unsettling, and immersive feel.
+ */
+
+/* General body and passage styling */
+body {
+  background-color: #0d0d0d;
+  color: #c4c4c4;
+  font-family: 'Georgia', serif;
+  font-size: 1.1em;
+  line-height: 1.6;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.passage {
+  padding: 2em;
+  max-width: 800px;
+  margin: 0 auto;
+  border-left: 2px solid #333;
+  border-right: 2px solid #333;
+}
+
+/* Link styling (the player's choices) */
+.link {
+  color: #ff4d4d; /* Muted red for choices */
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.2s ease-in-out;
+}
+
+.link:hover {
+  color: #e50000;
+  text-decoration: underline;
+  transform: translateX(5px);
+}
+
+/* Variable display for stats (e.g., sanity) */
+#stats {
+  position: fixed;
+  top: 1em;
+  right: 1em;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid #ff4d4d;
+  padding: 0.5em 1em;
+  border-radius: 5px;
+  font-size: 0.9em;
+  z-index: 100;
+}
+
+/* Styling for special text and effects */
+.whispers {
+  font-style: italic;
+  color: #ffcccc;
+  opacity: 0.8;
+  animation: flicker 1.5s infinite alternate;
+}
+
+.ominous {
+  font-weight: bold;
+  color: #ff0000;
+}
+
+/* Keyframes for the flicker animation */
+@keyframes flicker {
+  from { opacity: 0.8; }
+  to { opacity: 0.9; }
+}
+
+/* Image styling */
+.passage img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1em auto;
+    border: 2px solid #333;
+    filter: grayscale(100%) brightness(80%);
+}
+
+
+
+:: StoryInit
+<<set $sanity to 100>>
+<<set $light to 100>>
+<<set $elena_trust to 0>>
+<<set $inventory to (a: )>>
+<<set $silver_bell to false>>
+<<set $cracked_amulet to false>>
+<<set $carved_rune to false>>
+<<set $found_elena to false>>
+<<set $read_diary to false>>
+<<set $puzzle_solved to false>>
+
+:: Start
+
+<div id="stats">
+Sanity: <<print $sanity>>%
+<br>
+Light: <<print $light>>%
+</div>
+
+<img src="https://placehold.co/800x400/1a1a1a/5a5a5a?text=The+Entrance" alt="A dark, winding stone staircase disappearing into shadows." />
+
+The air grows colder and heavier with each step down the winding stone staircase. The city's sounds fade, replaced by a profound, suffocating silence. Your single flashlight beam cuts through the inky blackness. The entrance is sealed behind you.
+
+[[Go left, to the dark, waterlogged passage->Passage Left]]
+[[Go right, through the crumbling archway->Archway Right]]
+
+:: Passage Left
+<<set $light to $light - 5>>
+
+The passage narrows, forcing you to squeeze through. The walls are slick with moisture, and you hear a faint, metallic scraping sound ahead. A strange smell, like wet stone and ancient earth, fills your nose. You find yourself in a small antechamber. On a pedestal sits a rusty, ornate silver bell, humming with a barely perceptible vibration.
+
+[[Take the bell->Hall of Whispers][$inventory.push("Silver Bell"); $silver_bell to true]]
+[[Leave the bell alone and continue->Hall of Whispers]]
+
+:: Hall of Whispers
+<<set $light to $light - 10>>
+<<set $sanity to $sanity - 10>>
+
+<img src="https://placehold.co/800x400/1a1a1a/5a5a5a?text=The+Hall+of+Whispers" alt="A long, shadowy hallway with strange symbols on the walls." />
+
+The air vibrates with faint, incoherent whispers. They are not words, but a chorus of hissing and muttering that seems to come from all directions at once. You feel your mind straining to make sense of the sound. The whispers get louder.
+
+<div class="whispers">"Find... us... help..."</div>
+
+<<if $silver_bell is true>>
+The whispers seem to momentarily quiet as you hold the bell. You feel a distinct pull towards a side chamber.
+[[Follow the pull, holding the bell aloft->Ritual Chamber]]
+<<else>>
+The whispers grow louder, and you feel an overwhelming sense of dread.
+[[Huddle in the corner, trying to block out the sound->Hallucination]]
+<<endif>>
+
+:: Hallucination
+<<set $sanity to $sanity - 20>>
+<<set $light to $light - 5>>
+
+<img src="https://placehold.co/800x400/1a1a1a/5a5a5a?text=The+Shadow+Figure" alt="A blurry, distorted image of a grotesque figure in the darkness." />
+
+You see a brief flash of something scuttling in the shadows, a grotesque shape with too many limbs. It disappears the moment you focus on it. You can't be sure if it was real or just a trick of your failing mind.
+
+Your sanity is now <<print $sanity>>%.
+
+<<if $sanity <= 0>>
+[[The darkness consumes you.->Sanity Ending]]
+<<else>>
+You stumble back, trying to regain your bearings. You need to get out of this place.
+[[Keep moving, trying to find a way out->Archway Right]]
+<<endif>>
+
+:: Archway Right
+<<set $light to $light - 5>>
+
+You pass through the crumbling archway and enter a large, open area. There are three paths ahead:
+
+A path leading [[forward to a stone dais|Stone Dais]].
+A passage to the [[left with glowing runes|Rune Passage]].
+A small, dark hole in the wall to the [[right|Dark Hole]].
+
+<<if $found_elena is false>>
+You find a small, makeshift campsite. A woman, Elena, is huddled by a dying fire, her eyes wide with fear. She jumps at the sight of you.
+"Thank God," she whispers, her voice hoarse. "I've been down here for days. There's... something here."
+<<set $found_elena to true>>
+
+[[Offer her a ration bar from your pack->Offer Food][$elena_trust += 10]]
+[[Ask her what she knows about this place->Ask Questions]]
+[[Tell her you'll find a way out, together->Team Up][$elena_trust += 5]]
+<<else>>
+You continue exploring the area.
+<<if $elena_trust >= 10>>
+Elena says, "I've found a small diary in the eastern chamber. It might be helpful."
+[[Go to the Eastern Chamber with Elena->Eastern Chamber]]
+<<else>>
+You continue exploring alone.
+[[Go to the Stone Dais->Stone Dais]]
+[[Go to the Rune Passage->Rune Passage]]
+[[Go to the Dark Hole->Dark Hole]]
+<<endif>>
+<<endif>>
+
+:: Offer Food
+<<set $light to $light - 2>>
+<<if $elena_trust > 0>>
+She gratefully accepts the food, her fear lessening slightly. "Thank you," she says. "It's been so long since I ate."
+<<endif>>
+She tells you she's a historian and came down here searching for ancient texts. She knows the layout better than you, but is too afraid to move.
+
+[[Continue exploring the area->Continue Exploring]]
+
+:: Ask Questions
+<<set $light to $light - 2>>
+"The whispers," she says, her voice trembling. "They call out to me. The entity... it feeds on fear. I think it's trying to trap us here forever."
+
+[[Continue exploring the area->Continue Exploring]]
+
+:: Team Up
+<<set $light to $light - 2>>
+"Together," she repeats, her face pale but her eyes determined. "I like the sound of that. I've found some things, but they're useless on their own." She gestures to her bag.
+
+[[Continue exploring the area->Continue Exploring]]
+
+:: Continue Exploring
+You continue exploring alone.
+[[Go to the Stone Dais->Stone Dais]]
+[[Go to the Rune Passage->Rune Passage]]
+[[Go to the Dark Hole->Dark Hole]]
+
+:: Stone Dais
+<<set $light to $light - 5>>
+<<set $sanity to $sanity - 5>>
+
+<img src="https://placehold.co/800x400/1a1a1a/5a5a5a?text=The+Stone+Dais" alt="A stone dais in a ritual chamber, with a strange symbol etched into it." />
+
+You arrive at a large stone dais in the center of the chamber. Etched into its surface is a complex, circular symbol. The air hums with a powerful energy.
+
+<<if $inventory.includes("Cracked Amulet")>>
+You feel the amulet vibrate in your hand. This is the place to mend it.
+[[Place the amulet on the dais->Mend Amulet]]
+<<else>>
+You hear a soft click from the dais. A small, hidden compartment opens. Inside is a cracked amulet.
+[[Take the cracked amulet->Take Amulet][$inventory.push("Cracked Amulet"); $cracked_amulet to true]]
+<<endif>>
+
+:: Mend Amulet
+<<set $cracked_amulet to "mended">>
+The amulet glows, the cracks sealing themselves with a warm, golden light. A calming sensation washes over you, and you feel your sanity improve.
+<<set $sanity to $sanity + 10>>
+You hear a distant scream.
+[[Investigate the scream->Investigate Scream][$elena_trust -= 20]]
+[[Leave the scream alone and move on->Archway Right]]
+
+:: Investigate Scream
+<<set $light to $light - 5>>
+<<set $sanity to $sanity - 10>>
+You find Elena, cowering behind a pillar. The whispers are louder here. She glares at you. "You abandoned me!"
+<<set $elena_trust to $elena_trust - 20>>
+[[Try to apologize->Apologize][$elena_trust += 10]]
+[[Demand to know what she saw->Demand Answer][$elena_trust -= 10]]
+
+:: Apologize
+"I'm sorry," you say. "I heard the scream and came as fast as I could." Elena seems to calm down slightly. You've earned back a bit of her trust.
+[[Continue exploring with Elena->Archway Right]]
+
+:: Demand Answer
+"What did you see?!" you demand, your voice sharp. Elena shrinks back. "I'm not telling you anything," she says, her trust in you completely shattered.
+[[You part ways->Archway Right]]
+
+:: Rune Passage
+<<set $light to $light - 5>>
+
+<img src="https://placehold.co/800x400/1a1a1a/5a5a5a?text=Glowing+Runes" alt="A passage with glowing runes pulsing on the walls." />
+
+The walls of this passage are covered in glowing runes. They pulse with a low, rhythmic light. A strange, metallic device is embedded in the wall at the end of the passage.
+
+<<if $puzzle_solved is true>>
+The device is now a portal, glowing with an otherworldly light.
+[[Step through the portal->Final Confrontation]]
+<<else>>
+A puzzle! The runes are glowing in a specific order: red, blue, green.
+[[Press the runes in order: red, blue, green->Solve Puzzle]]
+[[Press the runes in a random order->Random Press]]
+<<endif>>
+
+:: Solve Puzzle
+<<set $puzzle_solved to true>>
+The device whirs to life, and the runes glow brighter. A small, stone carved rune is ejected from the machine.
+[[Take the carved rune->Take Rune][$inventory.push("Carved Rune"); $carved_rune to true]]
+
+:: Take Rune
+<<set $inventory.push("Carved Rune")>>
+<<set $carved_rune to true>>
+[[Return to the Archway->Archway Right]]
+
+:: Random Press
+<<set $sanity to $sanity - 20>>
+<<set $light to $light - 10>>
+A piercing alarm blares, and the runes flash violently before returning to normal. You feel a surge of panic and lose some sanity.
+[[Return to the Archway->Archway Right]]
+
+:: Dark Hole
+<<set $light to $light - 10>>
+
+You squeeze into the dark hole. The space is tight, and you feel ancient, mummified hands brush against your face. You reach the end and find a small, leather-bound diary.
+
+[[Take the diary and read it->Read Diary][$inventory.push("Diary"); $read_diary to true]]
+[[Leave the diary and go back->Archway Right]]
+
+:: Read Diary
+The diary details the great-aunt's rituals. The last entry reads, "The three totems—Bell, Amulet, Rune—must be placed in the central chamber to break the bond. But beware the price..."
+
+[[Go back with the new knowledge->Archway Right]]
+
+:: Ritual Chamber
+<<set $light to $light - 10>>
+<<if $silver_bell is true>>
+You stand in a circular room. In the center is a pedestal with a hollow. The hum from the bell grows louder here.
+[[Place the bell on the pedestal->Place Bell]]
+<<else>>
+You have no bell. The whispers are deafening. You flee.
+[[Run back to the Hall of Whispers->Hall of Whispers]]
+<<endif>>
+
+:: Place Bell
+<<set $silver_bell to "placed">>
+The bell glows with a brilliant, silver light. A section of the wall crumbles, revealing a hidden passage. You've found the way to the final chamber.
+
+[[Proceed to the Final Confrontation->Final Confrontation]]
+
+:: Final Confrontation
+<<set $light to $light - 10>>
+<img src="
+
